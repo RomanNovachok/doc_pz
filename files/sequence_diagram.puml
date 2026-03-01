@@ -1,0 +1,66 @@
+@startuml
+actor "Buyer" as B
+boundary "Web UI" as UI
+control "CartController" as CC
+control "CartService" as CS
+database "CartRepository" as CR
+database "CustomerRepository" as CUST
+collections "Session/Cookie Store" as SS
+
+== Add item to cart ==
+B -> UI : Click "Add to Cart"(listingId, qty)
+UI -> CC : addToCart(listingId, qty,\nauthToken?, sessionId)
+
+alt Logged-in user (authToken present)
+  CC -> CUST : findCustomer(authToken)
+  CUST --> CC : customerId
+
+  CC -> CS : getOrCreateCartForCustomer(customerId)
+  CS -> CR : findActiveCart(customerId)
+
+  alt active cart exists
+    CR --> CS : cartId
+  else no active cart
+    CS -> CR : createCart(customerId)
+    CR --> CS : cartId
+  end
+
+  CC -> CS : addItem(cartId, listingId, qty)
+  CS -> CR : upsertCartItem(cartId, listingId, qty)
+  CR --> CS : ok
+  CS --> CC : cartSummary
+  CC --> UI : showUpdatedCart(cartSummary)
+
+else Guest user (no authToken)
+  CC -> SS : get("cartId", sessionId)
+
+  alt cartId exists in cookie
+    SS --> CC : cartId
+  else no cartId in cookie
+    CC -> CS : createGuestCart()
+    CS -> CR : createCart(customerId = null)
+    CR --> CS : cartId
+    CS --> CC : cartId
+    CC -> SS : set("cartId", cartId, sessionId)
+  end
+
+  CC -> CS : addItem(cartId, listingId, qty)
+  CS -> CR : upsertCartItem(cartId, listingId, qty)
+  CR --> CS : ok
+  CS --> CC : cartSummary
+  CC --> UI : showUpdatedCart(cartSummary)
+end
+
+== Continue in another session ==
+note over B,SS
+Guest: cartId stays in cookie/localStorage,
+so user can return later and keep the same cart.
+end note
+
+note over B,CUST
+Logged-in: cart is linked to customerId,
+so user can log in on another session/device
+and continue with the same cart.
+end note
+
+@enduml

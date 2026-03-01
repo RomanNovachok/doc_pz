@@ -1,0 +1,49 @@
+@startuml
+left to right direction
+skinparam shadowing false
+skinparam linetype ortho
+skinparam actorStyle stickman
+
+actor "Seller" as Seller
+actor "Amazon Admin" as Admin
+actor "Payment/Bank Service" as Pay
+actor "Tax Service" as Tax
+actor "Catalog Moderation" as Mod
+
+' --- Seller onboarding
+(Register Seller) as UC_Register
+(Verify Email/OTP) as UC_OTP
+(KYC / Payout Setup) as UC_KYC
+(Tax Verification) as UC_Tax
+(Admin Review Seller) as UC_Review
+
+' --- Product listing
+(Add Product Listing) as UC_Add
+(Select Category) as UC_Cat
+(Upload Images) as UC_Img
+(Validate Attributes) as UC_Val
+(Moderate Product) as UC_Mod
+
+' Actors -> main use cases
+Seller --> UC_Register
+Seller --> UC_Add
+
+Admin --> UC_Review
+Pay --> UC_KYC
+Tax --> UC_Tax
+Mod --> UC_Mod
+
+' Includes
+UC_Register .> UC_OTP : <<include>>
+UC_Register .> UC_KYC : <<include>>
+UC_Register .> UC_Tax : <<include>>
+
+UC_Add .> UC_Cat : <<include>>
+UC_Add .> UC_Img : <<include>>
+UC_Add .> UC_Val : <<include>>
+
+' Extends
+UC_Review ..> UC_Register : <<extend>>\n(if PendingReview)
+UC_Mod ..> UC_Add : <<extend>>\n(if PendingModeration)
+
+@enduml

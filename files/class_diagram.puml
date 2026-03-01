@@ -1,0 +1,103 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam linetype ortho
+
+class Category {
+  +id: String
+  +name: String
+}
+
+abstract class Product {
+  +asin: String
+  +title: String
+  +getPrice(): Money
+}
+
+class PhysicalProduct {
+  +weightGrams: int
+}
+
+class DigitalProduct {
+  +downloadUrl: String
+}
+
+Product <|-- PhysicalProduct
+Product <|-- DigitalProduct
+
+' Category hierarchy (aggregation)
+Category "1" o-- "0..*" Category : subcategories
+Category "1" -- "0..*" Product : contains
+
+class Seller {
+  +sellerId: String
+  +displayName: String
+}
+
+class Listing {
+  +listingId: String
+  +price: Money
+  +quantity: int
+}
+
+Seller "1" -- "0..*" Listing
+Product "1" -- "0..*" Listing
+
+class Customer {
+  +customerId: String
+  +email: String
+}
+
+class Cart {
+  +cartId: String
+  +getTotal(): Money
+}
+class CartItem {
+  +qty: int
+  +unitPrice: Money
+}
+
+Customer "0..1" -- "0..1" Cart : activeCart
+Cart *-- "1..*" CartItem
+CartItem --> Listing
+
+class Order {
+  +orderId: String
+  +status: String
+  +total: Money
+}
+class OrderItem {
+  +qty: int
+  +priceAtPurchase: Money
+}
+Customer "1" -- "0..*" Order
+Order *-- "1..*" OrderItem
+OrderItem --> Listing
+
+class Shipment {
+  +shipmentId: String
+  +trackingNumber: String
+  +status: String
+}
+Order "1" *-- "0..1" Shipment
+
+' Services for purchase scenario (dependencies)
+class CheckoutService {
+  +checkout(cartId, address, payment): Order
+}
+class InventoryService {
+  +reserve(listingId, qty): bool
+}
+class PaymentGateway {
+  +charge(amount, method): bool
+}
+class DeliveryService {
+  +createShipment(orderId, address): Shipment
+}
+
+CheckoutService ..> InventoryService : <<dependency>>
+CheckoutService ..> PaymentGateway : <<dependency>>
+CheckoutService ..> DeliveryService : <<dependency>>
+CheckoutService ..> Order : creates
+
+@enduml

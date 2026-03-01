@@ -1,0 +1,48 @@
+@startuml
+start
+:Open Amazon website;
+
+if (Logged in?) then (yes)
+  :Load profile & saved addresses;
+else (no)
+  :Continue as Guest\n(or Sign In / Register);
+endif
+
+:Browse categories / Search product;
+:Open product page;
+:Add item to cart;
+
+:Open cart;
+:Proceed to checkout;
+
+if (Shipping address exists?) then (yes)
+  :Select saved address;
+else (no)
+  :Enter shipping address;
+endif
+
+:Select shipping option;
+:Validate cart (prices, availability);
+
+:Reserve inventory;
+if (Inventory available?) then (yes)
+else (no)
+  :Show "Out of stock";
+  stop
+endif
+
+:Choose payment method;
+:Pay;
+
+if (Payment successful?) then (yes)
+  :Create Order;
+  :Create Shipment;
+  :Hand over to carrier;
+  :Delivery in progress;
+  :Delivered;
+  stop
+else (no)
+  :Payment failed;\nRetry / change method;
+  stop
+endif
+@enduml
