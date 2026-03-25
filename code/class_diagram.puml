@@ -3,21 +3,19 @@ skinparam classAttributeIconSize 0
 skinparam shadowing false
 skinparam linetype ortho
 
+' --- Catalog ---
 class Category {
   +id: String
   +name: String
 }
-
 abstract class Product {
   +asin: String
   +title: String
   +getPrice(): Money
 }
-
 class PhysicalProduct {
   +weightGrams: int
 }
-
 class DigitalProduct {
   +downloadUrl: String
 }
@@ -29,20 +27,15 @@ Product <|-- DigitalProduct
 Category "1" o-- "0..*" Category : subcategories
 Category "1" -- "0..*" Product : contains
 
-class Seller {
-  +sellerId: String
-  +displayName: String
-}
-
+' --- Marketplace offer ---
 class Listing {
   +listingId: String
   +price: Money
   +quantity: int
 }
+Product "1" -- "0..*" Listing : offeredAs
 
-Seller "1" -- "0..*" Listing
-Product "1" -- "0..*" Listing
-
+' --- Buyer purchase flow ---
 class Customer {
   +customerId: String
   +email: String
@@ -57,7 +50,7 @@ class CartItem {
   +unitPrice: Money
 }
 
-Customer "0..1" -- "0..1" Cart : activeCart
+Customer "1" -- "0..1" Cart : activeCart
 Cart *-- "1..*" CartItem
 CartItem --> Listing
 
@@ -75,29 +68,9 @@ Order *-- "1..*" OrderItem
 OrderItem --> Listing
 
 class Shipment {
-  +shipmentId: String
   +trackingNumber: String
   +status: String
 }
 Order "1" *-- "0..1" Shipment
-
-' Services for purchase scenario (dependencies)
-class CheckoutService {
-  +checkout(cartId, address, payment): Order
-}
-class InventoryService {
-  +reserve(listingId, qty): bool
-}
-class PaymentGateway {
-  +charge(amount, method): bool
-}
-class DeliveryService {
-  +createShipment(orderId, address): Shipment
-}
-
-CheckoutService ..> InventoryService : <<dependency>>
-CheckoutService ..> PaymentGateway : <<dependency>>
-CheckoutService ..> DeliveryService : <<dependency>>
-CheckoutService ..> Order : creates
 
 @enduml
