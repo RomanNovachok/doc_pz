@@ -1,0 +1,17 @@
+# Node / NestJS
+node_modules/
+dist/
+.nest/
+
+# Logs and temporary files
+tmp/
+*.log
+
+# Previous .NET helper caches
+.dotnet/
+.nuget/
+.appdata/
+
+# Build artifacts
+**/bin/
+**/obj/
