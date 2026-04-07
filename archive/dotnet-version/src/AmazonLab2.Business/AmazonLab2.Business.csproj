@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AmazonLab2.Domain\AmazonLab2.Domain.csproj" />
+    <ProjectReference Include="..\AmazonLab2.DataAccess\AmazonLab2.DataAccess.csproj" />
+  </ItemGroup>
+
+</Project>
