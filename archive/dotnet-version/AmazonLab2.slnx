@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/AmazonLab2.App/AmazonLab2.App.csproj" />
+    <Project Path="src/AmazonLab2.Business/AmazonLab2.Business.csproj" />
+    <Project Path="src/AmazonLab2.CsvGenerator/AmazonLab2.CsvGenerator.csproj" />
+    <Project Path="src/AmazonLab2.DataAccess/AmazonLab2.DataAccess.csproj" />
+    <Project Path="src/AmazonLab2.Domain/AmazonLab2.Domain.csproj" />
+    <Project Path="src/AmazonLab2.Presentation/AmazonLab2.Presentation.csproj" />
+  </Folder>
+</Solution>

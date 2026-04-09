@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{title}}</title>
+  <link rel="stylesheet" href="/styles/app.css" />
+</head>
+<body>
+  <main class="page-shell narrow-shell">
+    <header class="page-header">
+      <div>
+        <p class="eyebrow">Laboratory 3</p>
+        <h1>{{title}}</h1>
+        <p class="subtitle">Create, edit and delete the core entity of the Amazon domain.</p>
+      </div>
+      <a class="secondary-link" href="/products">Back to products</a>
+    </header>
+
+    <section class="card form-card">
+      {{#if errorMessage}}
+        <div class="error-banner">{{errorMessage}}</div>
+      {{/if}}
+
+      <form method="post" action="{{action}}" class="product-form">
+        <label>
+          <span>ASIN</span>
+          <input type="text" name="asin" value="{{product.asin}}" placeholder="ASIN-001-001" required />
+        </label>
+
+        <label>
+          <span>Title</span>
+          <input type="text" name="title" value="{{product.title}}" placeholder="Product title" required />
+        </label>
+
+        <label>
+          <span>Product Type</span>
+          <select name="productType" required>
+            <option value="Physical" {{#if product.isPhysical}}selected{{/if}}>Physical</option>
+            <option value="Digital" {{#if product.isDigital}}selected{{/if}}>Digital</option>
+          </select>
+        </label>
+
+        <label>
+          <span>Category</span>
+          <select name="categoryId" required>
+            <option value="">Select category</option>
+            {{#each categories}}
+              <option value="{{id}}" {{#if selected}}selected{{/if}}>{{label}}</option>
+            {{/each}}
+          </select>
+        </label>
+
+        <div class="form-actions">
+          <button type="submit" class="primary-button">{{submitLabel}}</button>
+          <a class="secondary-link" href="/products">Cancel</a>
+        </div>
+      </form>
+    </section>
+  </main>
+</body>
+</html>

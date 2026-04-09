@@ -80,6 +80,47 @@ export class TypeOrmCatalogRepository implements CatalogRepository {
     return this.toProductModel(await this.productRepository.save(product));
   }
 
+  async createProduct(input: Omit<ProductModel, 'id'>): Promise<ProductModel> {
+    const existingProduct = await this.productRepository.findOne({ where: { asin: input.asin } });
+    if (existingProduct) {
+      throw new Error(`Product with ASIN ${input.asin} already exists.`);
+    }
+
+    const product = this.productRepository.create(input);
+    return this.toProductModel(await this.productRepository.save(product));
+  }
+
+  async updateProduct(id: number, input: Omit<ProductModel, 'id'>): Promise<ProductModel> {
+    const product = await this.productRepository.findOne({ where: { id } });
+    if (!product) {
+      throw new Error(`Product with id ${id} was not found.`);
+    }
+
+    const duplicateAsin = await this.productRepository.findOne({ where: { asin: input.asin } });
+    if (duplicateAsin && duplicateAsin.id !== id) {
+      throw new Error(`Another product with ASIN ${input.asin} already exists.`);
+    }
+
+    product.asin = input.asin;
+    product.title = input.title;
+    product.productType = input.productType;
+    product.categoryId = input.categoryId;
+
+    return this.toProductModel(await this.productRepository.save(product));
+  }
+
+  async deleteProduct(id: number): Promise<void> {
+    const result = await this.productRepository.delete(id);
+    if (!result.affected) {
+      throw new Error(`Product with id ${id} was not found.`);
+    }
+  }
+
+  async findProductById(id: number): Promise<ProductModel | null> {
+    const product = await this.productRepository.findOne({ where: { id } });
+    return product ? this.toProductModel(product) : null;
+  }
+
   async upsertListing(input: Omit<ListingModel, 'id'>): Promise<ListingModel> {
     let listing = await this.listingRepository.findOne({
       where: { sellerId: input.sellerId, productId: input.productId },

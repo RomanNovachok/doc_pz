@@ -1,0 +1,26 @@
+namespace AmazonLab2.DataAccess.Abstractions;
+
+public sealed record CsvMarketplaceRecord(
+    string SellerExternalId,
+    string SellerName,
+    string SellerEmail,
+    string CategoryPath,
+    string ProductAsin,
+    string ProductTitle,
+    string ProductType,
+    decimal Price,
+    string Currency,
+    int StockQuantity,
+    string CustomerExternalId,
+    string CustomerFullName,
+    string CustomerEmail,
+    string OrderExternalId,
+    DateTime OrderedAtUtc,
+    string OrderStatus,
+    int Quantity,
+    string ShipmentExternalId,
+    string ShipmentStatus,
+    string TrackingNumber,
+    string DestinationCountry,
+    string DestinationCity,
+    string DestinationStreet);

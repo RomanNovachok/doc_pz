@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{pageTitle}}</title>
+  <link rel="stylesheet" href="/styles/app.css" />
+</head>
+<body>
+  <main class="page-shell">
+    <header class="page-header">
+      <div>
+        <p class="eyebrow">Laboratory 3</p>
+        <h1>{{pageTitle}}</h1>
+        <p class="subtitle">MVC CRUD interface for Amazon marketplace products.</p>
+      </div>
+      <div class="header-actions">
+        <a class="secondary-link" href="/docs">Swagger</a>
+        <a class="primary-link" href="/products/create">Add Product</a>
+      </div>
+    </header>
+
+    <section class="card">
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>ASIN</th>
+              <th>Title</th>
+              <th>Type</th>
+              <th>Category</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each products}}
+              <tr>
+                <td>{{id}}</td>
+                <td>{{asin}}</td>
+                <td>{{title}}</td>
+                <td>{{productType}}</td>
+                <td>{{categoryPath}}</td>
+                <td class="actions-cell">
+                  <a class="table-link" href="/products/{{id}}/edit">Edit</a>
+                  <form method="post" action="/products/{{id}}/delete" class="inline-form">
+                    <button type="submit" class="danger-button" onclick="return confirm('Delete this product?')">Delete</button>
+                  </form>
+                </td>
+              </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
