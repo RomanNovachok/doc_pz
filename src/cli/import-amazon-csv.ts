@@ -1,7 +1,8 @@
-﻿import 'reflect-metadata';
+import 'reflect-metadata';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from '../app.module';
 import { AmazonMarketplaceImportService } from '../business/services/amazon-marketplace-import.service';
+import { ImportSummaryReporter } from './output/import-summary.reporter';
 
 function getArg(name: string): string | undefined {
   const index = process.argv.indexOf(name);
@@ -14,9 +15,9 @@ async function main() {
 
   try {
     const importService = app.get(AmazonMarketplaceImportService);
+    const reporter = app.get(ImportSummaryReporter);
     const summary = await importService.importFromFile(csvPath);
-    console.log('Import completed successfully.');
-    console.log(JSON.stringify(summary, null, 2));
+    await reporter.report(summary);
   } finally {
     await app.close();
   }

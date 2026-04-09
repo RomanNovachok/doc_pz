@@ -1,0 +1,10 @@
+{
+  "mode": "console",
+  "kafka": {
+    "brokers": [
+      "localhost:9092"
+    ],
+    "topic": "amazon-marketplace.import-summary",
+    "clientId": "amazon-marketplace-lab4"
+  }
+}
