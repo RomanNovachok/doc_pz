@@ -221,3 +221,77 @@ curl http://localhost:3001/products
 - `src/data-access/repositories/typeorm-catalog.repository.ts`
 - `src/presentation/views/products/index.hbs`
 - `src/presentation/views/products/form.hbs`
+
+## Лабораторна 4
+
+Для ЛР 4 вивід результатів імпорту відділено від читання CSV-файлу через GoF-патерн `Strategy`.
+
+### Де що лежить
+- `src/data-access/csv/amazon-marketplace-csv.reader.ts` - тільки читання CSV
+- `src/business/services/amazon-marketplace-import.service.ts` - обробка й побудова summary
+- `src/cli/output/output-strategy.interface.ts` - контракт стратегії виводу
+- `src/cli/output/console-output.strategy.ts` - вивід у консоль
+- `src/cli/output/kafka-output.strategy.ts` - відправка в Kafka
+- `src/cli/output/import-summary.reporter.ts` - оркестрація форматування й виводу
+- `config/output.config.json` - вибір активної стратегії без змін у коді
+
+### Як перемикати стратегію
+
+За замовчуванням використовується консоль:
+
+```json
+{
+  "mode": "console"
+}
+```
+
+Щоб переключити на Kafka, достатньо змінити конфіг:
+
+```json
+{
+  "mode": "kafka",
+  "kafka": {
+    "brokers": ["localhost:9092"],
+    "topic": "amazon-marketplace.import-summary",
+    "clientId": "amazon-marketplace-lab4"
+  }
+}
+```
+
+Після цього команда запуску не змінюється:
+
+```powershell
+npm run import:csv -- --csv data/amazon_marketplace_seed.csv
+```
+
+### Примітка щодо Kafka
+
+Для реального режиму `kafka` у середовищі має бути доступний пакет `kafkajs` і Kafka broker з параметрами з `config/output.config.json`.
+
+### Швидкий локальний запуск Kafka
+
+У репозиторії є готовий файл `docker-compose.kafka.yml` для локального broker-а на `localhost:9092`.
+
+Запуск:
+
+```powershell
+docker compose -f docker-compose.kafka.yml up -d
+```
+
+Перевірка списку topic-ів:
+
+```powershell
+docker exec -it local-kafka kafka-topics --bootstrap-server localhost:9092 --list
+```
+
+Перегляд повідомлень з topic-а:
+
+```powershell
+docker exec -it local-kafka kafka-console-consumer --bootstrap-server localhost:9092 --topic amazon-marketplace.import-summary --from-beginning
+```
+
+Зупинка:
+
+```powershell
+docker compose -f docker-compose.kafka.yml down
+```

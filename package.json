@@ -12,7 +12,7 @@
     "lint": "eslint \"src/**/*.ts\"",
     "typecheck": "tsc --noEmit",
     "generate:csv": "ts-node src/cli/generate-amazon-csv.ts",
-    "import:csv": "ts-node src/cli/import-amazon-csv.ts"
+    "import:csv": "node --no-warnings ./node_modules/ts-node/dist/bin.js src/cli/import-amazon-csv.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.1.6",
@@ -24,6 +24,7 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
     "hbs": "^4.2.1",
+    "kafkajs": "^2.2.4",
     "multer": "^2.0.2",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2",
